@@ -43,7 +43,7 @@
           dth1 = o["Deaths"];
           d=o.Date;
           year = parseInt(d.slice(0,4));
-          months = parseInt(d.slice(5,7));
+          months = parseInt(d.slice(5,7))-1;
           dates = parseInt(d.slice(8,10));
           console.log(year,months,dates,case1);
           date4[i] = [new Date(year, months, dates), case1];
