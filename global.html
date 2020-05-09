@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Global Scenario</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+  <link href="svgMap-master/demo/demo.css" rel="stylesheet">
+  <link href="svgMap-master/dist/svgMap.css" rel="stylesheet">
+  <script src="svgMap-master/dist/svgMap.js"></script>
+  
+<link rel="stylesheet" type="text/css" href="css/tab.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="hi">
+    <b>COVID-19 TRACKER</b>
+  </div>
+  <ul>
+    <li><a href="index.html">Home <span class="glyphicon glyphicon-home"></span></a></li>
+    <li><a href="stats.html">Statistics</a></li> 
+    <li><a href="search.html">Essentials and Services</span></a></li>
+    <li><a href="global.html">Global Scenario</a></li>
+    <li><a href="info2.html">Covid-19</a></li>
+    <li><a href="info1.html">Symptoms</a></li>
+    <li><a href="info.html">Preventions</a></li> 
+    <li style="float:right"><a href="faqs.html">FAQS</a></li> 
+</ul>
+<div class="row">
+  <div class="column1">
+    <div class="box1"><h3>Total</h3></div>
+    <div class="box2">
+    <div id="box2"></div>
+    </div>
+  </div>
+  <div class="column1">
+    <div class="box11"><h3>Active</h3></div>
+    <div class="box12" id="box12"></div> 
+  </div>
+  <div class="column1">
+    <div class="box21"><h3>Recovered<h3></div>
+    <div class="box22" id="box22"></div> 
+  </div>
+  <div class="column1">
+    <div class="box31"><h3>Deaths</h3></div>
+    <div class="box32" id="box32"></div> 
+  </div>
+</div>
+  <div class="demo-wrapper">
+
+    <!-- Demo GPD -->
+
+    <div class="demo-container">
+      <h2>Covid-19 Patients in the World</h2>
+
+      <div id="svgMapGPD"></div>
+      <script src="svgMap-master/data/gdp.js"></script>
+      <script>
+        new svgMap({
+          targetElementID: 'svgMapGPD',
+          data: svgMapDataGPD
+        });
+      </script>
+    </div>
+
+  </div>
+<p><b>Hint:Please refresh page for better results.</b></p>
+</body>
+
+</html>

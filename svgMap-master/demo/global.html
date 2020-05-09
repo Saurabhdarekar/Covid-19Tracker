@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>svgMap demos</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+  <link href="demo.css" rel="stylesheet">
+  <link href="../dist/svgMap.css" rel="stylesheet">
+  <script src="../dist/svgMap.js"></script>
+  
+<link rel="stylesheet" type="text/css" href="/Users/hp/Desktop/css/css/tab.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <ul>
+    <li><a href="index.html"><span class="glyphicon glyphicon-home"></span></a></li>
+    <li><a href="search.html">Essentials</span></a></li>
+    <li><a href="stats.html">Stats</a></li> 
+    <li><a href="faqs.html">FAQS</a></li> 
+    <li><a href="svgMap-master/demo/index.html">Global</a></li> 
+</ul>
+
+  <div class="demo-wrapper">
+
+    <!-- Demo GPD -->
+
+    <div class="demo-container">
+      <h2>Covid-19 Patients in the world</h2>
+
+      <div id="svgMapGPD"></div>
+      <script src="../data/gdp.js"></script>
+      <script>
+        new svgMap({
+          targetElementID: 'svgMapGPD',
+          data: svgMapDataGPD
+        });
+      </script>
+    </div>
+
+  </div>
+
+</body>
+
+</html>

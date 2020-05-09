@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Statistics</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="css/tab.css">
+<link rel="stylesheet" type="text/css" href="css/stats.css">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+  <body>
+    <div class="hi">
+      <b>COVID-19 TRACKER</b>
+    </div>
+    <ul>
+      <li><a href="index.html">Home <span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="stats.html">Statistics</a></li> 
+      <li><a href="search.html">Essentials and Services</span></a></li>
+      <li><a href="global.html">Global Scenario</a></li>
+      <li><a href="info2.html">Covid-19</a></li>
+      <li><a href="info1.html">Symptoms</a></li>
+      <li><a href="info.html">Preventions</a></li> 
+      <li style="float:right"><a href="faqs.html">FAQS</a></li> 
+  </ul>
+<h2>Select Type of Details you want to view:</h2>
+<select id="slct" name="slct" onchange="choose('slct','slct1')">
+  <option value="">Select</option>
+  <option value="SD">State Details</option>
+  <option value="DD">District Details</option>
+</select>
+<div id="type1">
+</div>
+<div id="type2">
+</div>
+<hr />
+<div id="box">
+<div id="data1">
+</div>
+<div id="data2">
+</div>
+</div>
+<div class="row">
+  <div class="column">
+<div id="chart_div1"></div>
+</div>
+<div class="column">
+  <div id="chart_div2"></div>
+  </div>
+  <div class="column">
+    <div id="chart_div3"></div>
+    </div>
+</div>
+<script type="text/javascript">
+  let mainObj=[],date1=[],cases=[],dates, months, mthnum = {"Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jly":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12}, year;
+  let deaths = [], recovered = [], date2 = [], date3 = [], flag1 = false, flag2 = false, flag3 = false;
+  let optionArray = [];
+  let state = ["Andaman and Nicobar Islands","Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chandigarh","Chhattisgarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Goa","Gujarat","Haryana","Himachal Pradesh","Jammu and Kashmir","Jharkhand","Karnataka","Kerala","Ladakh","Lakshadweep","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Puducherry","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Utter Pradesh","Uttarakhand","West Bengal"];
+  let statecode = ["an","ap","ar","as","br","ch","ct","dd","dl","ga","gj","hr","hp","jk","jh","ka","kl","la","ld","mp","mh","mn","ml","mz","nl","or","py","pb","rj","sk","tn","tg","tr","up","ut","wb"];
+  let state1 = [], district = [] ;
+ let i,flag = false,zone;
+ table();
+  function table(){
+    "use strict"  
+    fetch("https://api.covid19india.org/zones.json")
+    .then(function(resp){
+        return resp.json();
+    })
+    .then(function(data){
+      var mainobj=data.zones;
+      var i=0;
+      for(var o of mainobj)
+      {
+        state1[i] = o.state;
+        district[i] = o.district;
+        i++;
+      }
+    });   
+}
+function choose(s,s1){
+  var s = document.getElementById(s);
+  var s1 = document.getElementById(s1);
+  document.getElementById("chart_div1").innerHTML = "";
+  document.getElementById("data1").innerHTML = "";
+  document.getElementById("data2").innerHTML = "";
+  document.getElementById("chart_div2").innerHTML = "";
+  document.getElementById("chart_div3").innerHTML = "";
+  var output = '<hr />Choose State:<select id="slct1" name="slct1" onchange="populate()"></select>';
+  var output1 = '<hr />Choose State:<select id="slct1" name="slct1"></select>'+'<button onclick="stat()">search</button>';
+if(s.value == "SD")
+  {
+    document.getElementById('type1').innerHTML= output1;
+  }
+  else if(s.value == "DD")
+  {
+    output += 'Choose District:<select id="slct2" name="slct2"></select><button onclick="stat()">search</button>';
+    document.getElementById('type1').innerHTML= output;
+  }
+  var s = document.getElementById('slct');
+  var s1 = document.getElementById('slct1');
+  s1.innerHtml = "";
+  var i=0;
+  optionArray[i] = "|Select";
+  i++;
+    for(var j=0;j<36;j++){
+      var str = String(state[j]) + "|" + String(state[j]);
+      optionArray[i] = str;
+      i++;
+    }
+  for(var option in optionArray){
+    var pair = optionArray[option].split("|");
+    var newOption = document.createElement("option");
+    newOption.value = pair[0];
+    newOption.innerHTML = pair[1];
+    s1.options.add(newOption);
+  } 
+}
+function populate(){
+  var s1 = document.getElementById('slct1');
+  var s2 = document.getElementById('slct2');
+  var o,d;
+  let optionArray2 = [];
+  optionArray2[0] = "|Select";
+  var i = state1.length;
+  for(var j = 1; j<i; j++){
+    if(state1[j] == s1.value)
+    {
+      var str = String(district[j]) + "|" + String(district[j]);
+      optionArray2[i] = str;
+      i++;
+    }
+  }
+  var len = s2.length;
+  for (var i = len-1; i >= 0; i--) {
+   // s2.options[i] = null;
+   s2.remove(s2.options[i]); 
+   //console.log(s2.options[i]);
+  }
+  for(var option in optionArray2){
+    var pair = optionArray2[option].split("|");
+    var newOption = document.createElement("option");
+    newOption.value = pair[0];
+    newOption.innerHTML = pair[1];
+    s2.options.add(newOption);
+  }
+}
+function stat(){
+  var select = document.getElementById("slct");
+  var select1 = document.getElementById("slct1");
+  var select2 = document.getElementById("slct2");
+  var sv = select.value;
+  if(sv == "SD")
+  {
+    var sv1 = select1.value;
+    statedata(sv1);
+    data1(sv1);
+  }
+  else{
+    var sv1 = select1.value, sv2 = select2.value;
+    dstatedata(sv1,sv2);
+    ddata1(sv1,sv2);
+  }
+}
+function stat1(){
+  if(flag1){
+    chart1();
+  }
+  if(flag2){
+    chart2();
+  }
+  if(flag3){
+    chart3();
+  }
+  else{
+    document.getElementById("chart_div3").innerHTML = '<div class="third">No Deaths</div>';
+  }
+}
+function dstatedata(statename,districtname){
+  var act,rec,dth,con;
+
+  "use strict"  
+  fetch("https://api.covid19india.org/zones.json")
+  .then(function(resp){
+      return resp.json();
+  })
+  .then(function(data){
+    var mainobj=data["zones"],zone,color;
+    for(var o of mainobj){
+      var z;
+      if(o["district"] == districtname)
+      {
+        zone = o["zone"];
+        break;
+      }
+    }
+    var output1 = '<div id="cd" style="padding-bottom:50px;"><br>Zone:'+zone+'</div>';
+    document.getElementById("data2").innerHTML = output1;
+    if(zone=="Orange")
+    {
+      color = "#ffcc80"
+    }
+    else if(zone=="Green")
+    {
+      color = "#bbff99";
+    }
+    else if(zone=="Red")
+    {
+      color = "#ff9980";
+    }
+    document.getElementById('box').style.backgroundColor = color;
+  }); 
+  "use strict"  
+  fetch("https://api.covid19india.org/state_district_wise.json")
+  .then(function(resp){
+      return resp.json();
+  })
+  .then(function(data){
+    var mainobj=data[String(statename)];
+    var obj = mainobj["districtData"];
+    var z = obj[String(districtname)];
+    var i=0;
+    if(z!=null){
+    act = z["active"];
+    dth = z["deceased"];
+    rec = z["recovered"];
+    con = z["confirmed"];
+    }
+    else{
+      act = 0;
+      dth = 0;
+      rec = 0;
+      con = 0;
+    }
+    var output = '<div id="cd"><br><br>Confirmed cases:'+con+'<br><br>Active cases:'+act+'<br><br>Recovered cases:'+rec+'<br><br>Deceased:'+dth+'</div>';
+    document.getElementById("data1").innerHTML = output;
+  });  
+}
+function statedata(statename){
+  "use strict"  
+  fetch("https://api.covid19india.org/data.json")
+  .then(function(resp){
+      return resp.json();
+  })
+  .then(function(data){
+    var mainobj=data["statewise"];
+    var i=0,act,rec,dth,con;
+    for(var z of mainobj)
+    {
+      if(statename == z.state)
+      {
+        act = z.active;
+        dth = z.deaths;
+        rec = z.recovered;
+        con = z.confirmed;
+      }
+    }
+    document.getElementById('box').style.backgroundColor = "#99ddff";
+    var output = '<div class="cc"><br><br>Confirmed cases:'+con+'<br><br>Active cases:'+act+'<br><br>Recovered cases:'+rec+'<br><br>Deceased:'+dth+'</div><br><br><button onclick="stat1()">Graph</button>';
+    document.getElementById("data1").innerHTML = output;
+  });   
+}
+function data1(statename){
+  var index;
+  for(var i=0;i<37;i++)
+  {
+    if(state[i] == statename)
+    {
+      index = i;
+      break;
+    }
+  }
+  var code = statecode[index]; 
+  console.log(code); 
+  "use strict"
+      fetch("https://api.covid19india.org/states_daily.json")
+      .then(function(resp){
+          return resp.json();
+      })
+      .then(function(data){
+          var mainobj = data.states_daily;
+          var i=0,j=0,k=0,c=0;
+          flag1 = false;
+          flag2 = false;
+          flag3 = false;
+          for (var o of mainobj)
+          {
+              if(o.status=="Confirmed")
+              {
+                if(parseInt(o[code])!=NaN)
+                {
+                  cases[i] = parseInt(o[code]);
+                  c = cases[i];
+                }
+                else
+                {
+                  cases[i] = 0;
+                }
+                  var d=o.date;
+                  dates = parseInt(d.slice(0,2));
+                  months = mthnum[d.slice(3,6)]-1;
+                  year = parseInt(d.slice(7,));
+                  date1[j] = [new Date(2000+year, months, dates), c];
+                  if(c!=0)
+                  {
+                    flag1=true;
+                  }
+                  i++;
+              }
+              if(o.status=="Recovered")
+              {
+                  recovered[j] = parseInt(o[code]);
+                  var d=o.date;
+                  dates = parseInt(d.slice(0,2));
+                  months = mthnum[d.slice(3,6)]-1;
+                  year = parseInt(d.slice(7,));
+                  date2[j] = [new Date(2000+year, months, dates), recovered[j]];
+                  if(recovered[j]!=0)
+                  {
+                    flag2=true;
+                  }
+                  j++;
+              }
+              if(o.status=="Deceased")
+              {
+                  deaths[k] = parseInt(o[code]);
+                  var d=o.date;
+                  dates = parseInt(d.slice(0,2));
+                  months = mthnum[d.slice(3,6)]-1;
+                  year = parseInt(d.slice(7,));
+                  date3[k] = [new Date(2000+year, months, dates), deaths[k]];
+                  if(deaths[k]!=0)
+                  {
+                    flag3=true;
+                  }
+                  k++;
+              } 
+          }
+      });
+}
+function chart1(){      
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('date', 'Time of Day');
+    data.addColumn('number', 'Rating');
+
+    data.addRows(date1);
+
+
+    var options = {
+      title: 'Covid-19 patients confirmed per day',
+      width: 470,
+      height: 400,
+      curveType: 'function',
+      hAxis: {
+        title:'Date',
+        titleTextStyle:{
+          fontSize:17,
+          italic:false,
+        },
+        format: 'M/d/yy',
+        gridlines: {count: 15}
+      },
+      vAxis: {
+        title:'Cases',
+        titleTextStyle:{
+          fontSize:17,
+          italic:false,
+        },
+        viewWindowMode: "explicit", viewWindow:{ min: 0 },
+        gridlines: {color: 'none'},
+        minValue: 0,
+      },
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('chart_div1'));
+
+    chart.draw(data, options);
+  }
+}     
+
+function chart2(){      
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('date', 'Time of Day');
+    data.addColumn('number', 'Rating');
+
+    data.addRows(date2);
+
+
+    var options = {
+      title: 'Covid-19 patients recovered per day',
+      width: 470,
+      height: 400,
+      curveType: 'function',
+      hAxis: {
+        title:'Date',
+        titleTextStyle:{
+          fontSize:17,
+          italic:false,
+        },
+        format: 'M/d/yy',
+        gridlines: {count: 15}
+      },
+      vAxis: {
+        title:'Cases',
+        titleTextStyle:{
+          fontSize:17,
+          italic:false,
+        },
+        viewWindowMode: "explicit", viewWindow:{ min: 0 },
+        gridlines: {color: 'none'},
+        minValue: 0,
+      },
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('chart_div2'));
+
+    chart.draw(data, options);
+  }
+}  
+
+function chart3(){      
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+
+var data = new google.visualization.DataTable();
+data.addColumn('date', 'Time of Day');
+data.addColumn('number', 'Rating');
+
+data.addRows(date3);
+
+
+var options = {
+  title: 'Patients Deceased per day',
+  width: 470,
+  height: 400,
+  curveType: 'function',
+  hAxis: {
+    title:'Date',
+    titleTextStyle:{
+      fontSize:17,
+      italic:false,
+    },
+    format: 'M/d/yy',
+    gridlines: {count: 15}
+  },
+  vAxis: {
+    title:'Cases',
+    titleTextStyle:{
+      fontSize:17,
+      italic:false,
+    },
+    viewWindowMode: "explicit", viewWindow:{ min: 0 },
+    gridlines: {color: 'none'},
+    minValue: 0,
+  },
+};
+
+var chart = new google.visualization.LineChart(document.getElementById('chart_div3'));
+
+chart.draw(data, options);
+}
+}  
+
+</script>
+</body>
+
+
